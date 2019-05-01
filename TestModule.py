@@ -18,7 +18,9 @@ mydb = DBExercise("mytest.sqlite3")
 
 # mydb.create_db()
 
-mydb.delete_data("2019-05-01 18:14:20.046117")
+# mydb.delete_data("2019-05-01 18:14:20.046117")
+
+mydb.clear_table()
 
 mydb.insert_data(str(datetime.now()), "hamstring_instep", 0.0, 10, 8, 10)
 

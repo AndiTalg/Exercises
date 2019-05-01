@@ -52,7 +52,8 @@ class DBExercise:
     def delete_table(self):
         self.cur.execute("DROP TABLE IF EXISTS exercises")
 
-    # cur.execute('CREATE UNIQUE INDEX daily_date ON dailydata ( date)')
+    def clear_table(self):
+        self.cur.execute("DELETE FROM exercises")
 
     def dump_data(self):
         self.cur.execute("SELECT * FROM exercises")
