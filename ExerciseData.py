@@ -56,6 +56,4 @@ class Exercises:
 	def get_image(self, ex):
 		return ex_dict[ex]['image']    
 
-myclass = Exercises()
-lst = myclass.get_groups()
-print(lst)
+
