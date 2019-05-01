@@ -26,32 +26,36 @@ ex_dict = {
     'roll_hamstring_double': {'group':'blackroll', 'factor':100, 'unit':'num', 'default':8, 'image':'empty_image'}, 
 }
 
-# Get list of different groups
-def get_groups():
-    return set([ex_dict[e]['group'] for e in ex_dict.keys()])
+class Exercises:
 
-# Get all exercises of specific group
-def get_names(group):
-    return [e for e in ex_dict.keys() if ex_dict[e]['group'] == group]
+	# Initialize exercise class
+	def __init__(self):
+		print("init")
 
-# Get factor for specific exercise
-def get_factor(ex):
-    return ex_dict[ex]['factor']
+	# Get list of different groups
+	def get_groups(self):
+		return set([ex_dict[e]['group'] for e in ex_dict.keys()])
 
-# Get unit for specific exercise
-def get_unit(ex):
-    return ex_dict[ex]['unit']    
+	# Get all exercises of specific group
+	def get_names(self, group):
+		return [e for e in ex_dict.keys() if ex_dict[e]['group'] == group]
 
-# Get default value for weight, seconds, repetitions, ... unit for specific exercise
-def get_default(ex):
-    return ex_dict[ex]['unit']   
+	# Get factor for specific exercise
+	def get_factor(self, ex):
+		return ex_dict[ex]['factor']
 
-# Get image for specific exercise
-def get_image(ex):
-    return ex_dict[ex]['image']    
+	# Get unit for specific exercise
+	def get_unit(self, ex):
+		return ex_dict[ex]['unit']    
 
-#print(get_groups())
-#print(get_names('stretch'))
-#print(get_factor('hamstring_instep'))
-#print(get_unit('hamstring_instep'))
-#print(get_image('hamstring_instep'))
+	# Get default value for weight, seconds, repetitions, ... unit for specific exercise
+	def get_default(self, ex):
+		return ex_dict[ex]['unit']   
+
+	# Get image for specific exercise
+	def get_image(self, ex):
+		return ex_dict[ex]['image']    
+
+myclass = Exercises()
+lst = myclass.get_groups()
+print(lst)
