@@ -186,7 +186,7 @@ class Exercises:
     # Initialize exercise class
     def __init__(self, csv_path):
         self.ex_list = []
-
+        # Read all exercises from CSV-file - must be provided in project folder
         with open(csv_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=",")
             i = 0
@@ -198,44 +198,30 @@ class Exercises:
                     self.ex_list.append(ex)
                 i += 1
 
+    # Dump all exercises to console
     def dump_list(self):
         for ex in self.ex_list:
             print(ex)
 
+    # Get all different groups for first level navigation
     def groups(self):
-        # return list(set([ex_dict[e]["group"] for e in ex_dict.keys()]))
         return set([e.group for e in self.ex_list])
 
-    # Get all exercises of specific group
+    # Get all exercises of a specific group
     def exercises_of_group(self, group):
-        return [e for e in ex_dict.keys() if ex_dict[e]["group"] == group]
-
-    # Get factor for specific exercise
-    def factor(self, exercise):
-        return ex_dict[exercise]["factor"]
-
-    # Get unit for specific exercise
-    def unit(self, exercise):
-        return ex_dict[exercise]["unit"]
-
-    # Get default value for weight, seconds, repetitions, ... unit for specific exercise
-    def default(self, exercise):
-        return ex_dict[exercise]["default"]
-
-    # Get image for specific exercise
-    def image(self, exercise):
-        return ex_dict[exercise]["image"]
+        return [e.name for e in self.ex_list if e.group == group]
 
 
-myEx = Exercise("barbell", "bench")
+# myEx = Exercise("barbell", "bench")
 
-print(myEx)
+# print(myEx)
 
-print(myEx.name)
+# print(myEx.name)
 
-print(myEx.factor)
+# print(myEx.factor)
 
-myExList = Exercises("exercises.csv")
-myExList.dump_list()
-print(myExList.groups())
+# myExList = Exercises("exercises.csv")
+# myExList.dump_list()
+# print(myExList.groups())
+# print(myExList.exercises_of_group("pullup"))
 
