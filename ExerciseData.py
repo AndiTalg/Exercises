@@ -1,3 +1,5 @@
+import csv
+
 # Exercise dictionary: group, name, factor, unit, image
 ex_dict = {
     "barbell_press": {
@@ -164,17 +166,48 @@ ex_dict = {
 }
 
 
+class Exercise:
+    def __init__(
+        self, name, group, factor=10, unit="rep", default=10, image="empty_image"
+    ):
+        self.name = name
+        self.group = group
+        self.factor = factor
+        self.unit = unit
+        self.default = default
+        self.image = image
+
+    def __str__(self):
+        return f"{self.name} {self.group} factor: {self.factor} default: {self.default} {self.unit} image: {self.image}"
+
+
 class Exercises:
 
     # Initialize exercise class
-    def __init__(self):
-        print("init")
+    def __init__(self, csv_path):
+        self.ex_list = []
+
+        with open(csv_path) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=",")
+            i = 0
+            for row in csv_reader:
+                if i != 0:
+                    ex = Exercise(
+                        row[0], row[1], int(row[2]), row[3], int(row[4]), row[5]
+                    )
+                    self.ex_list.append(ex)
+                i += 1
+
+    def dump_list(self):
+        for ex in self.ex_list:
+            print(ex)
 
     def groups(self):
-        return list(set([ex_dict[e]["group"] for e in ex_dict.keys()]))
+        # return list(set([ex_dict[e]["group"] for e in ex_dict.keys()]))
+        return set([e.group for e in self.ex_list])
 
     # Get all exercises of specific group
-    def exercises(self, group):
+    def exercises_of_group(self, group):
         return [e for e in ex_dict.keys() if ex_dict[e]["group"] == group]
 
     # Get factor for specific exercise
@@ -192,4 +225,17 @@ class Exercises:
     # Get image for specific exercise
     def image(self, exercise):
         return ex_dict[exercise]["image"]
+
+
+myEx = Exercise("barbell", "bench")
+
+print(myEx)
+
+print(myEx.name)
+
+print(myEx.factor)
+
+myExList = Exercises("exercises.csv")
+myExList.dump_list()
+print(myExList.groups())
 
