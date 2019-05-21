@@ -1,9 +1,19 @@
 import csv
+import json
 
 
 class Exercise:
     def __init__(
-        self, name, group, factor=10, unit="rep", default=10, min=1, max=10, step=1, image="empty_image"
+        self,
+        name,
+        group,
+        factor=10,
+        unit="rep",
+        default=10,
+        min=1,
+        max=10,
+        step=1,
+        image="empty_image",
     ):
         self.name = name
         self.group = group
@@ -20,41 +30,64 @@ class Exercise:
 
 
 class Exercises:
-
-    # Initialize exercise class
+    # Initialize exercises class
     def __init__(self, csv_path):
+        # self.ex_list = []
+        self.group_list = []
         self.ex_list = []
-        # Read all exercises from CSV-file - must be provided in project folder
-        with open(csv_path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=";")
-            i = 0
-            for row in csv_reader:
-                if i != 0:
-                    ex = Exercise(
-                        row[0], row[1], int(row[2]), row[3], int(row[4]), int(row[5]), int(row[6]), int(row[7]), row[8]
-                    )
-                    self.ex_list.append(ex)
-                i += 1
+        # self.read_from_csv(csv_path)
+        with open(csv_path) as f:
+            self.ex_dict = json.load(f)
+        # Create group list with name and image for exercise group
+        for k, v in self.ex_dict.items():
+            self.group_list.append({"name": k, "image": v["image"]})
+            for g, e in v.items():
+                if g != "image":
+                    print(k)
+                    print(e["factor"])
 
-    # Dump all exercises to console
-    def dump_list(self):
-        for ex in self.ex_list:
-            print(ex)
+        # print(self.ex_dict)
 
-    # Get all different groups for first level navigation
-    def groups(self):
-        return set([e.group for e in self.ex_list])
+    # Read all exercises from CSV-file - must be provided in project folder
+    # def read_from_csv(self, csv_path):
+    #     with open(csv_path) as csv_file:
+    #         csv_reader = csv.reader(csv_file, delimiter=";")
+    #         i = 0
+    #         for row in csv_reader:
+    #             if i != 0:
+    #                 ex = Exercise(
+    #                     row[0],
+    #                     row[1],
+    #                     int(row[2]),
+    #                     row[3],
+    #                     int(row[4]),
+    #                     int(row[5]),
+    #                     int(row[6]),
+    #                     int(row[7]),
+    #                     row[8],
+    #                 )
+    #                 self.ex_list.append(ex)
+    #             i += 1
 
-    # Get all exercises of a specific group
-    def exercises_of_group(self, group):
-        return [e.name for e in self.ex_list if e.group == group]
-        
-    # Get exercise object for given exercise name
-    def get_exercise(self, name):
-        print(name)
-        for ex in self.ex_list:
-            if ex.name == name:
-                return ex
+    # # Dump all exercises to console
+    # def dump_list(self):
+    #     for ex in self.ex_list:
+    #         print(ex)
+
+    # # Get all different groups for first level navigation
+    # def groups(self):
+    #     return set([e.group for e in self.ex_list])
+
+    # # Get all exercises of a specific group
+    # def exercises_of_group(self, group):
+    #     return [e.name for e in self.ex_list if e.group == group]
+
+    # # Get exercise object for given exercise name
+    # def get_exercise(self, name):
+    #     print(name)
+    #     for ex in self.ex_list:
+    #         if ex.name == name:
+    #             return ex
 
 
 # myEx = Exercise("barbell", "bench")
@@ -65,9 +98,12 @@ class Exercises:
 
 # print(myEx.factor)
 
-#myExList = Exercises("exercises.csv")
+myExList = Exercises("JSONTest.json")
 
-#print(myExList.get_exercise('barbell_press'))
+for g in myExList.group_list:
+    print(g["name"], g["image"])
+
+# print(myExList.get_exercise('barbell_press'))
 # myExList.dump_list()
 # print(myExList.groups())
 # print(myExList.exercises_of_group("pullup"))
