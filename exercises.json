@@ -1,0 +1,54 @@
+{
+    "groups": [
+        {
+            "name": "bench",
+            "image": "bench.png"
+        },
+        {
+            "name": "stretch",
+            "image": "stretch.png"
+        }
+    ],
+    "exercises": [
+        {
+            "group": "bench",
+            "name": "barbell_press",
+            "factor": "10",
+            "unit": "kg",
+            "default": 20,
+            "min": 20,
+            "max": 50,
+            "step": 2
+        },
+        {
+            "group": "bench",
+            "name": "dumbbell_inclined_press",
+            "factor": "15",
+            "unit": "kg",
+            "default": 10,
+            "min": 8,
+            "max": 20,
+            "step": 2
+        },
+        {
+            "group": "stretch",
+            "name": "quad_standing",
+            "factor": "10",
+            "unit": "sec",
+            "default": 0,
+            "min": 20,
+            "max": 60,
+            "step": 5
+        },
+        {
+            "group": "stretch",
+            "name": "hamstring_standing",
+            "factor": "10",
+            "unit": "sec",
+            "default": 0,
+            "min": 20,
+            "max": 60,
+            "step": 5
+        }
+    ]
+}
