@@ -29,47 +29,67 @@ EX_LEVEL = 1
 class tvDelegate(object):
     
     def __init__(self, mview):   
-        self.ex = Exercises('exercises.csv')
+        self.ex = Exercises('exercises.json')
         self.mview = mview
         self.currentTitle = None
         self.currentRow = None
-        self.items = list(self.ex.groups())
-        self.level = 0
+        self.items = list(self.ex.group_names())
+        # Needed for level in tableview hierarchy (groups or exercises)
+        self.level = TOP_LEVEL
+        # Needed for "tableview_number_of_rows"
         self.currentNumLines = len(self.items)
         
     def tableview_did_select(self, tableview, section, row):
         
-        # Selection on top level -> reload table view with corresponding exercises
+        # Selection occured on top level (exercise groups)
         if self.level == TOP_LEVEL:
+            # Reload tableview items with exercises of selected group
             self.items = self.ex.exercises_of_group(self.items[row])
             self.level = EX_LEVEL
-        # Selection on exercise level -> start save exercise dialogue
+        # Selection occured on exercise level
         else:
             # Get corresponding exercise object of user selection
             ex_obj = self.ex.get_exercise(self.items[row])
-            # Reset list items of table vie to top level
-            self.items = list(self.ex.groups())
-            self.level = TOP_LEVEL
             # Present dialogue to log exercise
             s = SaveView(self.mview, ex_obj)
             s.background_color = '#dcf1ff'
             s.present('')
+            # Back to top level -> reload items with exercise groups
+            self.items = list(self.ex.group_names())
+            self.level = TOP_LEVEL
      
         self.currentNumLines = len(self.items)
-        tableview.reload_data() # forces changes into the displayed list
+        # Force changes into the displayed list
+        tableview.reload_data()
 
     def tableview_number_of_rows(self, tableview, section):
-        # Return the number of rows in the section
-        return self.currentNumLines #needed to be in sync with displayed version, 
+        # Has to be in sync with number of items in current level
+        return self.currentNumLines  
 
     def tableview_cell_for_row(self, tableview, section, row):
-        # Create and return a cell for the given section/row
+        # Create and return a customized cell for group or exercise
         cell = ui.TableViewCell()
         cell.text_label.text =  self.items[row]
-        cell.accessory_type = 'disclosure_indicator'
+        cell.text_label.font = ('arial', 24)
+        iv = self.__getImageViewForRow(self.items[row])
+        iv.flex = 'L'
+        iv.x = cell.content_view.x 
+        iv.y = cell.content_view.height * 0.1
+        iv.height = iv.width = tableview.row_height * 0.9
+        cell.content_view.add_subview(iv)
         return cell
-    
-
+        
+    def __getImageViewForRow(self, name):
+        # Get corresponding image name
+        img_name = self.ex.group_image(name) if self.level == TOP_LEVEL else self.ex.exercise_image(name)
+        # Load image or default image
+        img = ui.Image.named(img_name)
+        if img == None:
+            img = ui.Image.named("default.png")
+        # Create and set image view
+        iv = ui.ImageView()
+        iv.image = img
+        return iv
 
 class SaveView (ui.View):
 	
@@ -96,12 +116,16 @@ class SaveView (ui.View):
 		self.lbl.font = ('arial', 24)
 		self.add_subview(self.lbl)
 		
-		# Textfield for value if applicable
+		# Textfield for additional value if applicable
 		self.tf = ui.TextField()
 		self.tf.background_color = "white"
 		self.tf.text = str(ex_obj.default)
 		self.tf.alignment = ui.ALIGN_CENTER
 		self.tf.font = ('arial', 24)
+		if ex_obj.unit == "kg":
+				self.tf.hidden = False
+		else:
+				self.tf.hidden = True
 		self.add_subview(self.tf)
 		
 		# Create set buttons (max. 3 sets per ecercise)
@@ -226,25 +250,9 @@ class SaveView (ui.View):
 	# Abort logging and go back to top level of table view
 	def button_cancel_action(self, sender):
 		self.close()
-		print(sender.title)
-		pass
-
-
+		
 w, h = ui.get_screen_size()
 v = ui.View(name = 'Log exercise', bg_color = 'lightyellow', frame = (0,0,w,h))
-
-#def back_action(sender):
-		#print("Clicked on back button")
-		
-# Create back button
-#lb = ui.ButtonItem()
-#lb.tint_color = (1.0, .52, .0, 1.0)
-#lb.title = 'Back'
-#lb.enabled = True
-#lb.action = back_action
-
-
-#left_button_items = [lb]
 
 vdel = tvDelegate(v)
 
@@ -254,8 +262,8 @@ tv.name = 'tv_ex'
 tv.flex = "wb"
 tv.bg_color = "lightblue"
 tv.frame = v.frame
+tv.row_height = h * 0.1
 tv.delegate = tv.data_source = vdel
 v.add_subview(tv)
 
-#v.left_button_items = [lb]
 v.present('full screen')
